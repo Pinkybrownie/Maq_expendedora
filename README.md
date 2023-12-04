@@ -7,7 +7,12 @@ importe exacto, de forma que si introducimos dinero de más da un error y “dev
 Cuando se llega al importe exacto del refresco (1€) se activará una señal para dar el producto. Como 
 entradas tendrá señales indicadoras de la moneda, señales indicadoras de producto y como salidas la 
 señal de error y la de producto
-
+REQUISITOS MÍNIMOS
+• Utilizar entradas manuales (pulsadores, switches, etc.) y salidas (LEDs, Displays de 7 segmentos, etc.)
+• Sincronizar las entradas
+• Utilizar la señal de reloj de la placa
+• Utilizar señal de RESET
+• Utilizar una máquina de estados
 REQUISITOS
 • Usar como reloj los 100 MHz disponibles en la placa. Si, como es probable, resultasen mas adecuadas frecuencias mas bajas, usar un “prescaler” o divisor para generarlas a partir de dicha señal.
 • Usar máquinas de estados de Moore para controlar aquellos diseños que presentan distintos estados durante su funcionamiento.
