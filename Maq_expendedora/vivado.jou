@@ -1,0 +1,49 @@
+#-----------------------------------------------------------
+# Vivado v2023.1 (64-bit)
+# SW Build 3865809 on Sun May  7 15:05:29 MDT 2023
+# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+# Start of session at: Thu Dec  7 23:05:43 2023
+# Process ID: 25640
+# Current directory: C:/Users/andre/Documents/UPM/SEM_7/Maq_expendedora
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent27812 C:\Users\andre\Documents\UPM\SEM_7\Maq_expendedora\Maq_expendedora.xpr
+# Log file: C:/Users/andre/Documents/UPM/SEM_7/Maq_expendedora/vivado.log
+# Journal file: C:/Users/andre/Documents/UPM/SEM_7/Maq_expendedora\vivado.jou
+# Running On: LAPTOP-F00L5AKI, OS: Windows, CPU Frequency: 1498 MHz, CPU Physical cores: 4, Host memory: 8316 MB
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/andre/Documents/UPM/SEM_7/Maq_expendedora/Maq_expendedora.xpr
+update_compile_order -fileset sources_1
+close [ open C:/Users/andre/Documents/UPM/SEM_7/Maq_expendedora/Maq_expendedora.srcs/sources_1/new/Err_gestor.vhd w ]
+add_files C:/Users/andre/Documents/UPM/SEM_7/Maq_expendedora/Maq_expendedora.srcs/sources_1/new/Err_gestor.vhd
+update_compile_order -fileset sources_1
+file mkdir C:/Users/andre/Documents/UPM/SEM_7/Maq_expendedora/Maq_expendedora.srcs/sim_1/new
+set_property SOURCE_SET sources_1 [get_filesets sim_1]
+close [ open C:/Users/andre/Documents/UPM/SEM_7/Maq_expendedora/Maq_expendedora.srcs/sim_1/new/err_gestor_tb.vhd w ]
+add_files -fileset sim_1 C:/Users/andre/Documents/UPM/SEM_7/Maq_expendedora/Maq_expendedora.srcs/sim_1/new/err_gestor_tb.vhd
+update_compile_order -fileset sim_1
+update_compile_order -fileset sim_1
+launch_simulation
+source err_gestor_tb.tcl
+run all
+run 1 ms
+relaunch_sim
+relaunch_sim
+add_bp {C:/Users/andre/Documents/UPM/SEM_7/Maq_expendedora/Maq_expendedora.srcs/sim_1/new/err_gestor_tb.vhd} 62
+relaunch_sim
+remove_bps -file {C:/Users/andre/Documents/UPM/SEM_7/Maq_expendedora/Maq_expendedora.srcs/sim_1/new/err_gestor_tb.vhd} -line 62
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+close_sim
+launch_simulation
+source err_gestor_tb.tcl
+relaunch_sim
+relaunch_sim
+close_sim

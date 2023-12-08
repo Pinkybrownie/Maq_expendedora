@@ -32,12 +32,57 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity maq_exp is
---  Port ( );
+    Port ( clk: in STD_LOGIC;
+           button_mon: in STD_LOGIC;
+           button_prod: in STD_LOGIC;
+           sald_flag: in STD_LOGIC;
+           err_flag : in STD_LOGIC_VECTOR (1 downto 0);
+           activ_sald: out STD_LOGIC;
+           refresco: out STD_LOGIC);
 end maq_exp;
 
 architecture Behavioral of maq_exp is
+type states is (S0, S1, S2, S3);
+signal current: states := S0;
+signal next_state: states; 
 
 begin
-
-
+state_register: process(clk)
+ begin
+  if rising_edge(CLK) then
+   current <= next_state;
+  end if;
+ end process;
+ 
+ next_state_mode: process(button_mon,button_prod,current,err_flag, sald_flag)
+ begin
+  next_state <= current;
+  case current is
+    when S0 =>
+     refresco <= '0';--desactivacion modo refresco del decoder
+     if button_prod = '1' then
+        next_state <= S1;
+     end if;
+    when S1 =>
+     if button_mon = '1' then
+        next_state <= S2;
+        activ_sald<= '1';--activación de la entidad saldo
+     else next_state <= S0 after 15sec;
+     --vuelta a s1 si no se introducen monedas en los proximos 15seg
+     end if;
+    when S2 =>
+     if err_flag= "01" then --El saldo supera 1EUR
+        next_state <= S0;
+        activ_sald<= '0';--valor de reinicio del saldo
+     elsif sald_flag= '1' then --saldo 1EUR
+        next_state <= S3;
+        activ_sald<= '0';--valor de reinicio del saldo
+     end if;
+    when S3 =>
+     refresco <= '1'; --activacion modo refresco decoder
+     next_state <= S0 after 3sec;
+     --vuelta a S0 tras 3 segundos
+  end case;
+ end process;
+   
 end Behavioral;
