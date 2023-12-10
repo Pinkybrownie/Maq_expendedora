@@ -1,0 +1,8 @@
+Vivado Simulator v2023.1
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2023.1/bin/unwrapped/win64.o/xelab.exe --incr --debug typical --relax --mt 2 -L xil_defaultlib -L secureip --snapshot decoder_tb_behav xil_defaultlib.decoder_tb -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+ERROR: [VRFC 10-666] expression has 35 elements; expected 56 [C:/Users/kikem/Documents/GitHub/Maq_expendedora/Maq_expendedora/Maq_expendedora.srcs/sources_1/new/decoder.vhd:54]
+ERROR: [XSIM 43-3321] Static elaboration of top level VHDL design unit decoder_tb in library work failed.
