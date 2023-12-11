@@ -73,3 +73,4 @@ begin
         
         SALIDA <= std_logic_vector (total);        
     end process;
+end Behavioral;
