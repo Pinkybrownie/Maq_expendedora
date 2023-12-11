@@ -10,13 +10,13 @@ architecture tb of tb_Saldo is
         port (SW     : in std_logic_vector (3 downto 0);
               RESET  : in std_logic;
               BOTON  : in std_logic;
-              SALIDA : out real);
+              SALIDA : out std_logic_vector (6 downto 0));
     end component;
 
     signal SW     : std_logic_vector (3 downto 0);
     signal RESET  : std_logic;
     signal BOTON  : std_logic;
-    signal SALIDA : real;
+    signal SALIDA : std_logic_vector (6 downto 0);
 
 begin
 
