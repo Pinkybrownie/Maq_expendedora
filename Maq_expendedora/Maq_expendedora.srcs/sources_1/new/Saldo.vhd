@@ -35,43 +35,41 @@ entity Saldo is
     Port ( SW : in STD_LOGIC_VECTOR (3 downto 0);
            RESET : in STD_LOGIC;
            BOTON : in STD_LOGIC;
-           SALIDA: out real);
+           SALIDA: out STD_LOGIC_VECTOR(6 downto 0));
 end Saldo;
 
 architecture Behavioral of Saldo is
+signal total: unsigned (SALIDA'range):= (others => '0');
 begin
     process(SW,RESET,BOTON)
-    variable total: real:= 0.00;
     begin
         if SW(0) = '1' then
             if SW(1) = '0' and SW(2) = '0' and SW(3) = '0' and BOTON = '1' then
-                total:= total + 1.00;  
+                total <= total + 100;  
             end if;
         end if;
         
         if SW(1) = '1' then
             if SW(0) = '0' and SW(2) = '0' and SW(3) = '0' and BOTON = '1' then
-                total:= total + 0.50;  
+                total <= total + 50;  
             end if;
         end if;
         
         if SW(2) = '1' then
             if SW(0) = '0' and SW(1) = '0' and SW(3) = '0' and BOTON = '1' then
-                total:= total + 0.20;  
+                total <= total + 20;  
             end if;
         end if;
         
         if SW(3) = '1' then
             if SW(0) = '0' and SW(1) = '0' and SW(2) = '0' and BOTON = '1' then
-                total:= total + 0.10;  
+                total <= total + 10;  
             end if;
         end if;
         
-        if RESET = '1' then
-            total:= 0.00;
+        if RESET = '0' then
+            total <=(others => '0');
         end if;
         
-        SALIDA <= total;        
+        SALIDA <= std_logic_vector (total);        
     end process;
-
-end Behavioral;
