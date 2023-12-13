@@ -43,10 +43,13 @@ component Err_gestor is
            err_flag : out STD_LOGIC_VECTOR (1 downto 0));
     end component;
 component Saldo is
-    Port ( SW : in STD_LOGIC_VECTOR (3 downto 0);
+    Port ( CLK: in STD_LOGIC;
+           ACT_FLAG: in STD_LOGIC;
+           SW : in STD_LOGIC_VECTOR (3 downto 0);
            RESET : in STD_LOGIC;
            BOTON : in STD_LOGIC;
            ERR_FLAG: in STD_LOGIC_VECTOR (1 downto 0);
+           ONE_EUR: out STD_LOGIC;
            SALIDA: out STD_LOGIC_VECTOR(7 downto 0));
 end component;
 
@@ -57,6 +60,7 @@ signal b_prod: std_logic:= '0';
 signal b_mon: std_logic:= '0';
 signal val: std_logic_vector(7 downto 0):= (others => '0');
 signal flag: std_logic_vector (1 downto 0):= "00";
+signal un_euro: std_logic := '0';
 
 begin
  inst1: err_gestor port map(
@@ -66,10 +70,13 @@ begin
             err_flag => flag
         );
  inst2: saldo port map(
+            CLK => clock,
+            ACT_FLAG => '1',
             SW => moneda,
             RESET => '1',
             BOTON => b_mon,
             ERR_FLAG => flag,
+            ONE_EUR => un_euro,
             SALIDA => val 
         );
  --clock generation       
@@ -86,7 +93,8 @@ begin
  --saldo
  process
  begin
-   b_mon <= '1' after 2*period/3, '0' after 2*period/3 + 10ns;
+   --b_mon <= '1' after 2*period/3, '0' after 2*period/3 + 10ns;
+   b_mon <= '1' after period/2, '0' after period/2 + 10ns;
    wait for 100ns;
  end process;
 

@@ -35,9 +35,9 @@ entity maq_exp is
     Port ( clk: in STD_LOGIC;
            button_mon: in STD_LOGIC;
            button_prod: in STD_LOGIC;
-           sald_flag: in STD_LOGIC;
+           EUR_flag: in STD_LOGIC;
            err_flag : in STD_LOGIC_VECTOR (1 downto 0);
-           activ_sald: out STD_LOGIC;--S2
+           act_saldo: out STD_LOGIC;--S2
            refresco: out STD_LOGIC);--S3
 end maq_exp;
 
@@ -54,29 +54,29 @@ state_register: process(clk)
   end if;
  end process;
  
- next_state_mode: process(button_mon,button_prod,current,err_flag, sald_flag)
+ next_state_mode: process(button_mon,button_prod,current,err_flag)
  begin
   next_state <= current;
   case current is
     when S0 =>
      refresco <= '0';--desactivacion modo refresco del decoder
-     if button_prod = '1' then
+     if button_prod = '1' then --SELECCION DE BEBIDA
         next_state <= S1;
      end if;
     when S1 =>
-     if button_mon = '1' then
+     if button_mon = '1' then --INTRODUCCION DE LA PRIMERA MONEDA
         next_state <= S2;
-        activ_sald<= '1';--activación de la entidad saldo
+        act_saldo <= '1';--activación de la entidad saldo
      else next_state <= S0 after 15sec;
      --vuelta a s1 si no se introducen monedas en los proximos 15seg
      end if;
-    when S2 =>
-     if err_flag= "01" then --El saldo supera 1EUR
+    when S2 => --CONTANDO MONEDAS
+     if err_flag= "11" then --El saldo supera 1EUR
         next_state <= S0;
-        activ_sald<= '0';--valor de reinicio del saldo
-     elsif sald_flag= '1' then --saldo 1EUR
+        act_saldo <= '0';--desactivacion del saldo
+     elsif EUR_FLAG = '1' then --saldo 1EUR
         next_state <= S3;
-        activ_sald<= '0';--valor de reinicio del saldo
+        act_saldo<= '0';--desactivacion del saldo
      end if;
     when S3 =>
      refresco <= '1'; --activacion modo refresco decoder

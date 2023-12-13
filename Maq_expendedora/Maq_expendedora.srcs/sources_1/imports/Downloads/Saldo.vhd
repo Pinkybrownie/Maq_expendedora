@@ -29,10 +29,13 @@ use IEEE.NUMERIC_STD.ALL;
 --use UNISIM.VComponents.all;
 
 entity Saldo is
-    Port ( SW : in STD_LOGIC_VECTOR (3 downto 0);
+    Port ( CLK: in STD_LOGIC;
+           ACT_FLAG: in STD_LOGIC;
+           SW : in STD_LOGIC_VECTOR (3 downto 0);
            RESET : in STD_LOGIC;
            BOTON : in STD_LOGIC;
            ERR_FLAG: in STD_LOGIC_VECTOR (1 downto 0);
+           ONE_EUR: out STD_LOGIC;
            SALIDA: out STD_LOGIC_VECTOR(7 downto 0)
           );
 end Saldo;
@@ -40,8 +43,10 @@ end Saldo;
 architecture Behavioral of Saldo is
 signal total: unsigned (SALIDA'range):= (others => '0');
 begin
-    process(SW,RESET,BOTON,ERR_FLAG)
-    begin
+  process(CLK,SW,RESET,BOTON,ERR_FLAG, ACT_FLAG)
+  begin
+  if ACT_FLAG = '1' then
+    if rising_edge(CLK) then
         --NO DEBE HABER FLAG DE ERROR
         if ( ERR_FLAG = "00" and BOTON ='1') then
             case SW is
@@ -56,9 +61,15 @@ begin
         -- o QUERER REFRESCO CUANDO SALDO<1EUR
         --REINICIO DEL SALDO (DEVOLUCIÓN DE DINERO)
         if RESET = '0' or ERR_FLAG = "10" or ERR_FLAG = "11" then
-            total <=(others => '0');
+           total <=(others => '0');
         end if;
-        SALIDA <= std_logic_vector (total);        
-    end process;
-
+     end if;
+     if total=100 then
+        ONE_EUR <= '1';
+        --total <=(others => '0');
+     else ONE_EUR <= '0';
+     end if;
+  end if;
+  end process;
+SALIDA <= std_logic_vector (total);
 end Behavioral;

@@ -38,12 +38,11 @@ entity Err_gestor is
 end Err_gestor;
 
 architecture Behavioral of Err_gestor is
-
 begin
     process(switch, value)
     begin
     --codigo "11" saldo>1EUR ERROR MÁS RESTRICTIVO
-    if(to_integer(unsigned(value))>100) then
+    if to_integer(unsigned(value))>100 then
         err_flag <= (others => '1');
     else
         --Error en introduccion de monedas
@@ -52,7 +51,7 @@ begin
             when others => err_flag <= "01"; --codigo "01"
         end case;
         --código "10" comprar bebida cuando saldo<1EUR 
-        if (button='1' and to_integer(unsigned(value))<100) then
+        if button='1' and 0< to_integer(unsigned(value)) then
             err_flag <= "10";
         end if;
     end if;
