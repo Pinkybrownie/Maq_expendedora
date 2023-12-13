@@ -32,25 +32,27 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity Err_gestor is
     Port ( switch: in STD_LOGIC_VECTOR (3 downto 0);
-           value: integer range 0 to 8;
+           value: in STD_LOGIC_VECTOR(7 downto 0);
            button: in STD_LOGIC;
-           clk: in STD_LOGIC;
            err_flag : out STD_LOGIC_VECTOR (1 downto 0));
 end Err_gestor;
 
 architecture Behavioral of Err_gestor is
 
 begin
-    process(clk, switch)
+    process(switch, value)
     begin
-    if rising_edge(clk) then
+    --codigo "11" saldo>1EUR ERROR MÁS RESTRICTIVO
+    if(to_integer(unsigned(value))>100) then
+        err_flag <= (others => '1');
+    else
         --Error en introduccion de monedas
         case to_integer(unsigned(switch)) is
             when 0|1|2|4|8 => err_flag <= (others => '0');
-            when others => err_flag <= (others => '1');
+            when others => err_flag <= "01"; --codigo "01"
         end case;
-        --código "10" saldo<1EUR
-        if (button='1' and value<8) then
+        --código "10" comprar bebida cuando saldo<1EUR 
+        if (button='1' and to_integer(unsigned(value))<100) then
             err_flag <= "10";
         end if;
     end if;

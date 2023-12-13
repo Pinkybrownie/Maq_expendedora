@@ -13,5 +13,6 @@ Compiling package std.textio
 Compiling package ieee.std_logic_1164
 Compiling package ieee.numeric_std
 Compiling architecture behavioral of entity xil_defaultlib.Err_gestor [err_gestor_default]
+Compiling architecture behavioral of entity xil_defaultlib.Saldo [saldo_default]
 Compiling architecture behavioral of entity xil_defaultlib.err_gestor_tb
 Built simulation snapshot err_gestor_tb_behav

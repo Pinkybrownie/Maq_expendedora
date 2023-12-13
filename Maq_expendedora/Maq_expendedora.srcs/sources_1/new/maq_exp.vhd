@@ -37,8 +37,8 @@ entity maq_exp is
            button_prod: in STD_LOGIC;
            sald_flag: in STD_LOGIC;
            err_flag : in STD_LOGIC_VECTOR (1 downto 0);
-           activ_sald: out STD_LOGIC;
-           refresco: out STD_LOGIC);
+           activ_sald: out STD_LOGIC;--S2
+           refresco: out STD_LOGIC);--S3
 end maq_exp;
 
 architecture Behavioral of maq_exp is

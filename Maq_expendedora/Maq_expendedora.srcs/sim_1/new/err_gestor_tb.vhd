@@ -38,34 +38,56 @@ end err_gestor_tb;
 architecture Behavioral of err_gestor_tb is
 component Err_gestor is
     Port ( switch: in STD_LOGIC_VECTOR (3 downto 0);
-           value: integer range 0 to 8;
+           value: in STD_LOGIC_VECTOR(7 downto 0);
            button: in STD_LOGIC;
-           clk: in STD_LOGIC;
            err_flag : out STD_LOGIC_VECTOR (1 downto 0));
     end component;
+component Saldo is
+    Port ( SW : in STD_LOGIC_VECTOR (3 downto 0);
+           RESET : in STD_LOGIC;
+           BOTON : in STD_LOGIC;
+           ERR_FLAG: in STD_LOGIC_VECTOR (1 downto 0);
+           SALIDA: out STD_LOGIC_VECTOR(7 downto 0));
+end component;
 
 signal clock: std_logic := '0';
 constant period: time := 100 ns;
 signal moneda: std_logic_vector(3 downto 0):= "0000";
-signal button: std_logic:= '0';
-signal saldo: integer:= 0;
+signal b_prod: std_logic:= '0';
+signal b_mon: std_logic:= '0';
+signal val: std_logic_vector(7 downto 0):= (others => '0');
 signal flag: std_logic_vector (1 downto 0):= "00";
 
 begin
- utt: err_gestor port map(
-        button => button, --no se evalua el saldo
-        value => saldo,
-        clk => clock,
-        switch => moneda,
-        err_flag => flag
+ inst1: err_gestor port map(
+            button => b_prod,
+            value => val,
+            switch => moneda,
+            err_flag => flag
+        );
+ inst2: saldo port map(
+            SW => moneda,
+            RESET => '1',
+            BOTON => b_mon,
+            ERR_FLAG => flag,
+            SALIDA => val 
         );
  --clock generation       
  clock <= not clock after period/2;
  --estímulo monedas
- moneda(0) <= not moneda(0) after period;
- moneda(1) <= not moneda(1) after 3*period;
- moneda(2) <= not moneda(2) after 5*period;
- moneda(3) <= not moneda(3) after 7*period;
+ process
+ begin
+   moneda(0) <= not moneda(0) after period;
+   moneda(1) <= not moneda(1) after 3*period;
+   moneda(2) <= not moneda(2) after 5*period;
+   moneda(3) <= not moneda(3) after 7*period;
+   wait for 100ns;
+ end process;
  --saldo
-saldo<= to_integer(unsigned(moneda));
+ process
+ begin
+   b_mon <= '1' after 2*period/3, '0' after 2*period/3 + 10ns;
+   wait for 100ns;
+ end process;
+
 end Behavioral;
