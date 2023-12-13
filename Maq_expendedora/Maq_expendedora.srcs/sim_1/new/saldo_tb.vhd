@@ -10,13 +10,15 @@ architecture tb of tb_Saldo is
         port (SW     : in std_logic_vector (3 downto 0);
               RESET  : in std_logic;
               BOTON  : in std_logic;
-              SALIDA : out std_logic_vector (6 downto 0));
+              ERR_FLAG: in STD_LOGIC_VECTOR (1 downto 0);
+              SALIDA : out STD_LOGIC_VECTOR(4 downto 0));
     end component;
 
     signal SW     : std_logic_vector (3 downto 0);
     signal RESET  : std_logic;
     signal BOTON  : std_logic;
-    signal SALIDA : std_logic_vector (6 downto 0);
+    signal ERR_FLAG: STD_LOGIC_VECTOR (1 downto 0);
+    signal SALIDA : STD_LOGIC_VECTOR(4 downto 0);
 
 begin
 
@@ -24,19 +26,21 @@ begin
     port map (SW     => SW,
               RESET  => RESET,
               BOTON  => BOTON,
+              ERR_FLAG => ERR_FLAG,
               SALIDA => SALIDA);
 
     stimuli : process
     begin
         SW <= (others => '0');
         BOTON <= '0';
-
+        ERR_FLAG <= "00";
+        
         RESET <= '0';
         wait for 100 ns;
-        RESET <= '1f';
+        RESET <= '1';
         wait for 100 ns;
 
-        for i in 0 to 3 loop
+        for i in 3 downto 0 loop
             SW(i) <= '1';
             wait for 100 ns;
             BOTON <= '1'; 
@@ -49,5 +53,3 @@ begin
     end process;
 
 end tb;
-
-

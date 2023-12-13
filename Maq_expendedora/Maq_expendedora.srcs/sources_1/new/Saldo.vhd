@@ -1,76 +1,39 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 05.12.2023 20:09:37
--- Design Name: 
--- Module Name: Saldo - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
 use IEEE.NUMERIC_STD.ALL;
 
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity Saldo is
     Port ( SW : in STD_LOGIC_VECTOR (3 downto 0);
            RESET : in STD_LOGIC;
            BOTON : in STD_LOGIC;
-           SALIDA: out STD_LOGIC_VECTOR(6 downto 0));
+           ERR_FLAG: in STD_LOGIC_VECTOR (1 downto 0);
+           SALIDA: out STD_LOGIC_VECTOR(4 downto 0) --10c equivaldrían a 00001, 20c a 00010...
+          );
 end Saldo;
 
 architecture Behavioral of Saldo is
 signal total: unsigned (SALIDA'range):= (others => '0');
 begin
-    process(SW,RESET,BOTON)
+    process(SW,RESET,BOTON,ERR_FLAG)
     begin
-        if SW(0) = '1' then
-            if SW(1) = '0' and SW(2) = '0' and SW(3) = '0' and BOTON = '1' then
-                total <= total + 100;  
-            end if;
+        --NO DEBE HABER FLAG DE ERROR
+        if ( ERR_FLAG = "00" and BOTON ='1') then
+            case SW is
+              when "0001" => total <= total + 10;   -- +1€
+              when "0010" => total <= total + 5;    -- +50c
+              when "0100" => total <= total + 2;    -- +20c
+              when "1000" => total <= total + 1;    -- +10c
+              when others => total <= total;
+            end case;
         end if;
-        
-        if SW(1) = '1' then
-            if SW(0) = '0' and SW(2) = '0' and SW(3) = '0' and BOTON = '1' then
-                total <= total + 50;  
-            end if;
-        end if;
-        
-        if SW(2) = '1' then
-            if SW(0) = '0' and SW(1) = '0' and SW(3) = '0' and BOTON = '1' then
-                total <= total + 20;  
-            end if;
-        end if;
-        
-        if SW(3) = '1' then
-            if SW(0) = '0' and SW(1) = '0' and SW(2) = '0' and BOTON = '1' then
-                total <= total + 10;  
-            end if;
-        end if;
-        
-        if RESET = '0' then
+        --EN EL CASO DE SALDO > 1€ O PULSO BOTÓN RESET
+        -- o QUERER REFRESCO CUANDO SALDO < 1€
+        --REINICIO DEL SALDO (DEVOLUCIÓN DE DINERO)
+        if RESET = '0' or ERR_FLAG = "10" or ERR_FLAG = "11" then
             total <=(others => '0');
         end if;
-        
         SALIDA <= std_logic_vector (total);        
     end process;
+
 end Behavioral;
