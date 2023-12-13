@@ -31,9 +31,9 @@ begin
         SW <= (others => '0');
         BOTON <= '0';
 
-        RESET <= '1';
-        wait for 100 ns;
         RESET <= '0';
+        wait for 100 ns;
+        RESET <= '1f';
         wait for 100 ns;
 
         for i in 0 to 3 loop
