@@ -1,0 +1,9 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../Maq_expendedora.srcs/sources_1/new/EDGEDCTR.vhd" \
+"../../../../Maq_expendedora.srcs/sources_1/new/maq_exp.vhd" \
+"../../../../Maq_expendedora.srcs/sources_1/new/synchrnzr.vhd" \
+"../../../../Maq_expendedora.srcs/sim_1/new/Maq_exp_tb.vhd" \
+
+# Do not sort compile order
+nosort

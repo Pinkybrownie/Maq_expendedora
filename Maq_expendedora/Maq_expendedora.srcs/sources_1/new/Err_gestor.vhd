@@ -32,7 +32,7 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity Err_gestor is
     Port ( switch: in STD_LOGIC_VECTOR (3 downto 0);
-           value: in STD_LOGIC_VECTOR(7 downto 0);
+           value: in STD_LOGIC_VECTOR(4 downto 0);
            button: in STD_LOGIC;
            err_flag : out STD_LOGIC_VECTOR (1 downto 0));
 end Err_gestor;
@@ -42,10 +42,10 @@ begin
     process(switch, value)
     begin
     --codigo "11" saldo>1EUR ERROR MÁS RESTRICTIVO
-    if to_integer(unsigned(value))>100 then
+    if to_integer(unsigned(value))>10 then
         err_flag <= (others => '1');
     else
-        --Error en introduccion de monedas
+        --Error en introduccion de monedas (dos o mas sw activos)
         case to_integer(unsigned(switch)) is
             when 0|1|2|4|8 => err_flag <= (others => '0');
             when others => err_flag <= "01"; --codigo "01"

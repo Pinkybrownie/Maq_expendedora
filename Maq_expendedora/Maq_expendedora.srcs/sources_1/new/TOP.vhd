@@ -37,7 +37,7 @@ entity TOP is
            RST : in STD_LOGIC;
            MONEDA: in STD_LOGIC;
            PROD: in STD_LOGIC;
-           LED: out STD_LOGIC_VECTOR(6 downto 0)
+           LED: out STD_LOGIC_VECTOR(4 downto 0)
            );
 end TOP;
 
@@ -67,7 +67,7 @@ component Saldo is
            BOTON : in STD_LOGIC;
            ERR_FLAG: in STD_LOGIC_VECTOR (1 downto 0);
            ONE_EUR: out STD_LOGIC;
-           SALIDA: out STD_LOGIC_VECTOR(6 downto 0));
+           SALIDA: out STD_LOGIC_VECTOR(4 downto 0));
 end component;
 component Err_gestor is
     Port ( switch: in STD_LOGIC_VECTOR (3 downto 0);

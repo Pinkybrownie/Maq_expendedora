@@ -38,7 +38,8 @@ entity maq_exp is
            EUR_flag: in STD_LOGIC;
            err_flag : in STD_LOGIC_VECTOR (1 downto 0);
            act_saldo: out STD_LOGIC;--S2
-           refresco: out STD_LOGIC);--S3
+           refresco: out STD_LOGIC;--);--S3
+           LED: out STD_LOGIC_VECTOR (3 downto 0));
 end maq_exp;
 
 architecture Behavioral of maq_exp is
@@ -59,30 +60,56 @@ state_register: process(clk)
   next_state <= current;
   case current is
     when S0 =>
-     refresco <= '0';--desactivacion modo refresco del decoder
      if button_prod = '1' then --SELECCION DE BEBIDA
         next_state <= S1;
      end if;
     when S1 =>
      if button_mon = '1' then --INTRODUCCION DE LA PRIMERA MONEDA
         next_state <= S2;
-        act_saldo <= '1';--activación de la entidad saldo
-     else next_state <= S0 after 15sec;
+     else next_state <= S0 after 10sec;
      --vuelta a s1 si no se introducen monedas en los proximos 15seg
      end if;
-    when S2 => --CONTANDO MONEDAS
-     if err_flag= "11" then --El saldo supera 1EUR
-        next_state <= S0;
-        act_saldo <= '0';--desactivacion del saldo
-     elsif EUR_FLAG = '1' then --saldo 1EUR
+    when S2 =>
+     if EUR_FLAG = '1' then
         next_state <= S3;
-        act_saldo<= '0';--desactivacion del saldo
      end if;
+
+--    when S2 => --CONTANDO MONEDAS
+--     if EUR_FLAG = '1' then --El saldo supera 1EUR
+--        next_state <= S3;
+--        act_saldo <= '0';--desactivacion del saldo
+--     elsif err_flag= "11" then --saldo 1EUR
+--        next_state <= S0;
+--        act_saldo<= '0';--desactivacion del saldo
+--     end if;
     when S3 =>
-     refresco <= '1'; --activacion modo refresco decoder
-     next_state <= S0 after 3sec;
+     --refresco <= '1'; --activacion modo refresco decoder
+     --next_state <= S0 after 3sec;
+     next_state <= S0 after 300ns;--SOLO PARA EL TESTBENCH
      --vuelta a S0 tras 3 segundos
   end case;
  end process;
-   
+ 
+output_decod: process (current)
+ begin
+  LED <= (OTHERS => '0');
+  case current is
+   when s0 =>
+    LED(0) <= '1';
+    refresco <= '0';--desactivacion modo refresco del decoder
+    act_saldo <= '0';--desactivacion de la entidad saldo
+   when s1 =>
+    LED(1) <= '1';
+    act_saldo <= '1';--activacion de la entidad saldo
+   when s2 =>
+    LED(2) <= '1';
+   when s3 =>
+    LED(3) <= '1';
+    act_saldo <= '0';--desactivacion de la entidad saldo
+    refresco <= '1'; --activacion modo refresco decoder
+   when others =>
+    LED <= (OTHERS => '0');
+  end case;
+ end process;
+
 end Behavioral;
