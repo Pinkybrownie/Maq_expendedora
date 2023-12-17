@@ -1,0 +1,39 @@
+#-----------------------------------------------------------
+# Vivado v2023.1 (64-bit)
+# SW Build 3865809 on Sun May  7 15:05:29 MDT 2023
+# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+# Start of session at: Wed Dec 13 11:45:54 2023
+# Process ID: 18480
+# Current directory: C:/Users/kikem/Documents/GitHub/Maq_expendedora/Maq_expendedora
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent5676 C:\Users\kikem\Documents\GitHub\Maq_expendedora\Maq_expendedora\Maq_expendedora.xpr
+# Log file: C:/Users/kikem/Documents/GitHub/Maq_expendedora/Maq_expendedora/vivado.log
+# Journal file: C:/Users/kikem/Documents/GitHub/Maq_expendedora/Maq_expendedora\vivado.jou
+# Running On: LAPTOP-KHM45S5R, OS: Windows, CPU Frequency: 1992 MHz, CPU Physical cores: 4, Host memory: 21313 MB
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/kikem/Documents/GitHub/Maq_expendedora/Maq_expendedora/Maq_expendedora.xpr
+update_compile_order -fileset sources_1
+import_files -norecurse C:/Users/kikem/Documents/GitHub/Saldo.vhd
+update_compile_order -fileset sources_1
+launch_simulation
+reset_run synth_1
+launch_runs synth_1 -jobs 8
+wait_on_run synth_1
+reset_run synth_1
+launch_runs synth_1 -jobs 8
+wait_on_run synth_1
+reset_run synth_1
+launch_runs synth_1 -jobs 8
+wait_on_run synth_1
+reset_run synth_1
+launch_runs synth_1 -jobs 8
+wait_on_run synth_1
+update_compile_order -fileset sim_1
+reset_run synth_1
+launch_runs synth_1 -jobs 8
+wait_on_run synth_1
+launch_simulation
+source tb_decoder.tcl
+update_compile_order -fileset sim_1
+close_sim
