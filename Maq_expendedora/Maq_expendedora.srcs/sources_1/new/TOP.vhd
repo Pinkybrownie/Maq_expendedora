@@ -34,10 +34,13 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity TOP is
   Port (   CLK: in STD_LOGIC;
            SW : in STD_LOGIC_VECTOR (3 downto 0);
+           SW_S : in STD_LOGIC_VECTOR (3 downto 0);
            RST : in STD_LOGIC;
            MONEDA: in STD_LOGIC;
            PROD: in STD_LOGIC;
-           LED: out STD_LOGIC_VECTOR(4 downto 0)
+           LED: out STD_LOGIC_VECTOR(4 downto 0);
+           SEGMENT: out STD_LOGIC_VECTOR(6 downto 0);
+           DIGIT: out STD_LOGIC_VECTOR(7 downto 0)
            );
 end TOP;
 
@@ -71,9 +74,16 @@ component Saldo is
 end component;
 component Err_gestor is
     Port ( switch: in STD_LOGIC_VECTOR (3 downto 0);
-           value: in STD_LOGIC_VECTOR(6 downto 0);
+           value: in STD_LOGIC_VECTOR(4 downto 0);
            button: in STD_LOGIC;
            err_flag : out STD_LOGIC_VECTOR (1 downto 0));
+    end component;
+component decoder is
+    Port ( clk: in STD_LOGIC;
+           sw : in STD_LOGIC_VECTOR (3 downto 0);
+           dinero : in STD_LOGIC_VECTOR (4 downto 0); --SALIDA DE LA ENTIDA SALDO
+           seg : out STD_LOGIC_VECTOR (6 downto 0);
+           dig : out STD_LOGIC_VECTOR (7 downto 0));
     end component;
 
 signal reset_sync: std_logic;
@@ -82,7 +92,7 @@ signal p_sync: std_logic;
 signal reset_edge: std_logic;
 signal m_edge: std_logic;
 signal p_edge: std_logic;
-signal val: std_logic_vector(7 downto 0):= (others => '0');
+signal val: std_logic_vector(4 downto 0):= (others => '0');
 signal flag: std_logic_vector (1 downto 0):= "00";
 
 begin
@@ -119,7 +129,13 @@ inst_err: err_gestor port map(
             switch => SW,
             err_flag => flag
         );
-        
+inst_decoder: decoder port map(           
+            clk => CLK,
+            sw => SW_S,
+            dinero => val,
+            seg => SEGMENT,
+            dig => DIGIT 
+        );        
 LED <= val;
 
 end Behavioral;
