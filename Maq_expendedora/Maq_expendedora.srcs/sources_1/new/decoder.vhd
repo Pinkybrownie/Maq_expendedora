@@ -34,12 +34,11 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 --use UNISIM.VComponents.all;
 
 entity decoder is
-    Generic ( DIGITOS : positive);
     Port ( CLK: in STD_LOGIC;
            SW : in STD_LOGIC_VECTOR (3 downto 0);
-           SALDO : in STD_LOGIC_VECTOR (6 downto 0); --SALIDA DE LA ENTIDA SALDO
+           DINERO : in STD_LOGIC_VECTOR (4 downto 0); --SALIDA DE LA ENTIDA SALDO
            SEG : out STD_LOGIC_VECTOR (6 downto 0);
-           DIG : out STD_LOGIC_VECTOR (DIGITOS - 1 downto 0)
+           DIG : out STD_LOGIC_VECTOR (7 downto 0)
          );
 end decoder;
 
@@ -51,9 +50,9 @@ begin
         variable display : integer := 0;
     begin
         if rising_edge(CLK) then 
-            if (SALDO = 0) then
+            if (DINERO = 0) then
                 case SW is
-                    when "0000" =>
+                    when "0001" =>
                         display1 := "0110001"; --C
                         display2 := "0000001"; --O
                         display3 := "0110001"; --C
@@ -62,7 +61,7 @@ begin
                         display6 := "0000001"; --O
                         display7 := "1110001"; --L
                         display8 := "0001001"; --A
-                    when "0001" => 
+                    when "0010" => 
                         display1 := "0111000"; --F
                         display2 := "0001001"; --A
                         display3 := "0001001"; --N
@@ -71,7 +70,7 @@ begin
                         display6 := "1111111"; --
                         display7 := "1111111"; --
                         display8 := "1111111"; --
-                    when "0010" => 
+                    when "0100" => 
                         display1 := "0001001"; --N
                         display2 := "0110000"; --E
                         display3 := "0100100"; --S
@@ -80,7 +79,7 @@ begin
                         display6 := "0001001"; --A
                         display7 := "1111111"; --
                         display8 := "1111111"; --
-                    when "0011" =>
+                    when "1000" =>
                         display1 := "0001001"; --A
                         display2 := "0100001"; --G
                         display3 := "1000001"; --U
@@ -99,8 +98,8 @@ begin
                         display7 := "1111111"; --
                         display8 := "1111111"; --
                 end case;
-            elsif (SALDO /= 0) then
-                if (SALDO = 1) then
+            elsif (DINERO /= "00000") then
+                if (DINERO = "00001") then --DINERO INTRODUCIDO = 0.1 EUROS
                     display1 := "1111111"; --
                     display2 := "1111111"; --
                     display3 := "1111111"; --
@@ -110,7 +109,7 @@ begin
                     display7 := "0110001"; --1
                     display8 := "0000001"; --0                 
                     -- "01000000" esto es el punto del DP??
-                elsif (SALDO = 2) then
+                elsif (DINERO = "00010") then --DINERO INTRODUCIDO = 0.2 EUROS
                     display1 := "1111111"; --
                     display2 := "1111111"; --
                     display3 := "1111111"; --
@@ -119,7 +118,7 @@ begin
                     display6 := "0000001"; --0
                     display7 := "0010010"; --2
                     display8 := "0000001"; --0
-                elsif (SALDO = 3) then
+                elsif (DINERO = "00011") then --DINERO INTRODUCIDO = 0.3 EUROS
                     display1 := "1111111"; --
                     display2 := "1111111"; --
                     display3 := "1111111"; --
@@ -128,7 +127,7 @@ begin
                     display6 := "0000001"; --0
                     display7 := "0000110"; --3
                     display8 := "0000001"; --0
-                elsif (SALDO = 4) then
+                elsif (DINERO = "00100") then --DINERO INTRODUCIDO = 0.4 EUROS
                     display1 := "1111111"; --
                     display2 := "1111111"; --
                     display3 := "1111111"; --
@@ -137,7 +136,7 @@ begin
                     display6 := "0000001"; --0
                     display7 := "1001100"; --4
                     display8 := "0000001"; --0
-                elsif (SALDO = 5) then
+                elsif (DINERO = "00101") then --DINERO INTRODUCIDO  = 0.5 EUROS
                     display1 := "1111111"; --
                     display2 := "1111111"; --
                     display3 := "1111111"; --
@@ -146,7 +145,7 @@ begin
                     display6 := "0000001"; --0
                     display7 := "0100100"; --5
                     display8 := "0000001"; --0
-                elsif (SALDO = 6) then
+                elsif (DINERO = "00110") then --DINERO INTRODUCIDO = 0.6 EUROS
                     display1 := "1111111"; --
                     display2 := "1111111"; --
                     display3 := "1111111"; --
@@ -155,7 +154,7 @@ begin
                     display6 := "0000001"; --0
                     display7 := "0100000"; --6
                     display8 := "0000001"; --0
-                elsif (SALDO = 7) then
+                elsif (DINERO = "00111") then --DINERO INTRODUCIDO = 0.7 EUROS
                     display1 := "1111111"; --
                     display2 := "1111111"; --
                     display3 := "1111111"; --
@@ -164,7 +163,7 @@ begin
                     display6 := "0000001"; --0
                     display7 := "0001111"; --7
                     display8 := "0000001"; --0
-                elsif (SALDO = 8) then
+                elsif (DINERO = "01000") then --DINERO INTRODUCIDO = 0.8 EUROS
                     display1 := "1111111"; --
                     display2 := "1111111"; --
                     display3 := "1111111"; --
@@ -173,7 +172,7 @@ begin
                     display6 := "0000001"; --0
                     display7 := "0000000"; --8
                     display8 := "0000001"; --0
-                elsif (SALDO = 9) then
+                elsif (DINERO = "01001") then --DINERO INTRODUCIDO = 0.9 EUROS
                     display1 := "1111111"; --
                     display2 := "1111111"; --
                     display3 := "1111111"; --
@@ -182,7 +181,7 @@ begin
                     display6 := "0000001"; --0
                     display7 := "0000100"; --9
                     display8 := "0000001"; --0
-                elsif (SALDO = 10) then
+                elsif (DINERO = "01010") then --DINERO INTRODUCIDO = 1 EUROS
                     display1 := "0001000"; --R
                     display2 := "0110000"; --E
                     display3 := "0111000"; --F
@@ -191,7 +190,7 @@ begin
                     display6 := "0100100"; --S
                     display7 := "0110001"; --C
                     display8 := "0000001"; --O
-                elsif SALDO > 10 then
+                elsif DINERO > "01010" then --DINERO INTRODUCIDO > 1 EURO
                     display1 := "0110000"; --E
                     display2 := "0001000"; --R
                     display3 := "0001000"; --R
@@ -202,7 +201,9 @@ begin
                     display8 := "1111111"; --
                 end if;
             end if;
-            display := (display + 1) mod 8;
+            --if rising_edge(CLK) then
+                display := (display + 1) mod 8;
+            --end if;
             case display is 
                 when 0 =>
                     DIG <= "01111111";
