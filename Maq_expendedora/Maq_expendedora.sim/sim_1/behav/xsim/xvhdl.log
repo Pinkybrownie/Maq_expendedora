@@ -1,4 +1,0 @@
-INFO: [VRFC 10-163] Analyzing VHDL file "C:/Users/kikem/Documents/GitHub/Maq_expendedora/Maq_expendedora/Maq_expendedora.srcs/sources_1/new/decoder.vhd" into library xil_defaultlib
-INFO: [VRFC 10-3107] analyzing entity 'decoder'
-INFO: [VRFC 10-163] Analyzing VHDL file "C:/Users/kikem/Documents/GitHub/Maq_expendedora/Maq_expendedora/Maq_expendedora.srcs/sim_1/new/decoder_tb.vhd" into library xil_defaultlib
-INFO: [VRFC 10-3107] analyzing entity 'tb_decoder'

@@ -3,10 +3,10 @@
 # SW Build 3865809 on Sun May  7 15:05:29 MDT 2023
 # IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
 # SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
-# Start of session at: Tue Dec 19 12:28:35 2023
-# Process ID: 22708
+# Start of session at: Wed Dec 13 11:45:54 2023
+# Process ID: 18480
 # Current directory: C:/Users/kikem/Documents/GitHub/Maq_expendedora/Maq_expendedora
-# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent29756 C:\Users\kikem\Documents\GitHub\Maq_expendedora\Maq_expendedora\Maq_expendedora.xpr
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent5676 C:\Users\kikem\Documents\GitHub\Maq_expendedora\Maq_expendedora\Maq_expendedora.xpr
 # Log file: C:/Users/kikem/Documents/GitHub/Maq_expendedora/Maq_expendedora/vivado.log
 # Journal file: C:/Users/kikem/Documents/GitHub/Maq_expendedora/Maq_expendedora\vivado.jou
 # Running On: LAPTOP-KHM45S5R, OS: Windows, CPU Frequency: 1992 MHz, CPU Physical cores: 4, Host memory: 21313 MB
@@ -14,37 +14,26 @@
 start_gui
 open_project C:/Users/kikem/Documents/GitHub/Maq_expendedora/Maq_expendedora/Maq_expendedora.xpr
 update_compile_order -fileset sources_1
+import_files -norecurse C:/Users/kikem/Documents/GitHub/Saldo.vhd
+update_compile_order -fileset sources_1
 launch_simulation
-source cfg_tb_decoder.tcl
 reset_run synth_1
 launch_runs synth_1 -jobs 8
 wait_on_run synth_1
-launch_runs impl_1 -jobs 8
-wait_on_run impl_1
-close_sim
-launch_simulation
-source cfg_tb_decoder.tcl
-close_sim
-launch_simulation
-source cfg_tb_decoder.tcl
-close_sim
-launch_simulation
-source cfg_tb_decoder.tcl
-close_sim
-launch_simulation
-source cfg_tb_decoder.tcl
-set_property -name {xsim.simulate.runtime} -value {1500ns} -objects [get_filesets sim_1]
-close_sim
-launch_simulation
-source cfg_tb_decoder.tcl
-set_property -name {xsim.simulate.runtime} -value {1800ns} -objects [get_filesets sim_1]
-close_sim
-launch_simulation
-source cfg_tb_decoder.tcl
-close_sim
-synth_design -rtl -rtl_skip_mlo -name rtl_1
-synth_design -top maq_exp -part xc7a100tcsg324-1 -lint 
 reset_run synth_1
 launch_runs synth_1 -jobs 8
 wait_on_run synth_1
-open_run synth_1 -name synth_1
+reset_run synth_1
+launch_runs synth_1 -jobs 8
+wait_on_run synth_1
+reset_run synth_1
+launch_runs synth_1 -jobs 8
+wait_on_run synth_1
+update_compile_order -fileset sim_1
+reset_run synth_1
+launch_runs synth_1 -jobs 8
+wait_on_run synth_1
+launch_simulation
+source tb_decoder.tcl
+update_compile_order -fileset sim_1
+close_sim
