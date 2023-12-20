@@ -36,7 +36,7 @@ begin
         --EN EL CASO DE SALDO>1EUR O PULSO BOTÓN RESET
         -- o QUERER REFRESCO CUANDO SALDO<1EUR
         --REINICIO DEL SALDO (DEVOLUCION DE DINERO)
-        if RESET = '0' or ERR_FLAG = "10" or ERR_FLAG = "11" then
+        if RESET = '1' or ERR_FLAG = "10" or ERR_FLAG = "11" then
            total <=(others => '0');
         end if;
      end if;

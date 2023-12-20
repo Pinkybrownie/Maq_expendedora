@@ -33,12 +33,13 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity maq_exp is
     Port ( clk: in STD_LOGIC;
+           RESET: in STD_LOGIC;
            button_mon: in STD_LOGIC;
            button_prod: in STD_LOGIC;
            EUR_flag: in STD_LOGIC;
            err_flag : in STD_LOGIC_VECTOR (1 downto 0);
            act_saldo: out STD_LOGIC;--S2
-           refresco: out STD_LOGIC;--);--S3
+           refresco: inout STD_LOGIC;--);--S3
            LED: out STD_LOGIC_VECTOR (3 downto 0));
 end maq_exp;
 
@@ -48,6 +49,7 @@ signal current: states := S0;
 signal next_state: states; 
 
 begin
+
 state_register: process(clk)
  begin
   if rising_edge(CLK) then
@@ -55,9 +57,12 @@ state_register: process(clk)
   end if;
  end process;
  
- next_state_mode: process(button_mon,button_prod,current,err_flag)
+ next_state_mode: process(button_mon,button_prod,current,err_flag, EUR_FLAG, refresco)
  begin
   next_state <= current;
+  if RESET= '1' then
+    next_state <= S0;
+  end if;
   case current is
     when S0 =>
      if button_prod = '1' then --SELECCION DE BEBIDA
@@ -66,30 +71,28 @@ state_register: process(clk)
     when S1 =>
      if button_mon = '1' then --INTRODUCCION DE LA PRIMERA MONEDA
         next_state <= S2;
-     else next_state <= S0 after 10sec;
-     --vuelta a s1 si no se introducen monedas en los proximos 15seg
+     --else next_state <= S0 after 100ns; --SOLO PARA EL TESTBENCH
+     --vuelta a s1 si no se introducen monedas en los proximos 10seg
      end if;
     when S2 =>
-     if EUR_FLAG = '1' then
+     if EUR_FLAG = '1' then --saldo 1EUR
         next_state <= S3;
+     elsif err_flag= "11" then --saldo >1EUR
+        next_state <= S0;
      end if;
-
---    when S2 => --CONTANDO MONEDAS
---     if EUR_FLAG = '1' then --El saldo supera 1EUR
---        next_state <= S3;
---        act_saldo <= '0';--desactivacion del saldo
---     elsif err_flag= "11" then --saldo 1EUR
---        next_state <= S0;
---        act_saldo<= '0';--desactivacion del saldo
---     end if;
     when S3 =>
-     --refresco <= '1'; --activacion modo refresco decoder
-     --next_state <= S0 after 3sec;
-     next_state <= S0 after 300ns;--SOLO PARA EL TESTBENCH
-     --vuelta a S0 tras 3 segundos
+     --if rising_edge(refresco) then
+        --next_state <= s3;
+     --else next_state <= S0 after 100ns;--SOLO PARA EL TESTBENCH
+     if refresco='1' then --activacion modo refresco decoder
+        next_state <= S0 after 3sec;
+     end if;--vuelta a S0 tras 3 segundos
+     --NOTA: EN LAS SIMULACIONES AFTER FUNCIONA SIN PROBLEMAS, SE SINTETIZA E IMPLEMENTA.
+     --SIN EMBARGO, EN LA PLACA NO FUNCIONA.
   end case;
  end process;
  
+--VISUALIZAR EL ESTADO Y ACTIVACIÓN DE BANDERAS
 output_decod: process (current)
  begin
   LED <= (OTHERS => '0');

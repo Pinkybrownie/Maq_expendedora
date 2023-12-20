@@ -15,9 +15,9 @@ entity EDGEDCTR is
 end EDGEDCTR;
 
 architecture Behavioral of EDGEDCTR is
-    signal sreg_1: std_logic_vector(2 downto 0);
-    signal sreg_2: std_logic_vector(2 downto 0);
-    signal aux: std_logic_vector(2 downto 0);
+    signal sreg_1: std_logic_vector(2 downto 0):= (others => '0');
+    signal sreg_2: std_logic_vector(2 downto 0):= (others => '0');
+    signal aux: std_logic_vector(2 downto 0):= (others => '1');
 begin
     process (CLK)
     begin
@@ -34,6 +34,6 @@ begin
       EDGE_PROD <= '1' when "100",
               '0' when others;
     with aux select
-      RST_EDGE <= '1' when "100",
+      RST_EDGE <= '1' when "011",
                   '0' when others;
 end Behavioral;

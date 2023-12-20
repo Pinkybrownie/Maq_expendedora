@@ -1,24 +1,3 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 11.12.2023 17:38:01
--- Design Name: 
--- Module Name: TOP - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -34,13 +13,10 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity TOP is
   Port (   CLK: in STD_LOGIC;
            SW : in STD_LOGIC_VECTOR (3 downto 0);
-           SW_S : in STD_LOGIC_VECTOR (3 downto 0);
            RST : in STD_LOGIC;
            MONEDA: in STD_LOGIC;
            PROD: in STD_LOGIC;
-           LED: out STD_LOGIC_VECTOR(4 downto 0);
-           SEGMENT: out STD_LOGIC_VECTOR(6 downto 0);
-           DIGIT: out STD_LOGIC_VECTOR(7 downto 0)
+           LED: out STD_LOGIC_VECTOR(3 downto 0)
            );
 end TOP;
 
@@ -63,14 +39,26 @@ component EDGEDCTR is
            EDGE_PROD: out STD_LOGIC;
            RST_EDGE : out STD_LOGIC);
 end component;
+component maq_exp is
+    Port ( clk: in STD_LOGIC;
+           RESET: in STD_LOGIC;
+           button_mon: in STD_LOGIC;
+           button_prod: in STD_LOGIC;
+           EUR_flag: in STD_LOGIC;
+           err_flag : in STD_LOGIC_VECTOR (1 downto 0);
+           act_saldo: out STD_LOGIC;--S2
+           refresco: inout STD_LOGIC;--);--S3
+           LED: out STD_LOGIC_VECTOR (3 downto 0));
+end component;
 component Saldo is
-    Port ( CLK : in STD_LOGIC;
+    Port ( CLK: in STD_LOGIC;
+           ACT_FLAG: in STD_LOGIC;--senal de activacion
            SW : in STD_LOGIC_VECTOR (3 downto 0);
            RESET : in STD_LOGIC;
            BOTON : in STD_LOGIC;
            ERR_FLAG: in STD_LOGIC_VECTOR (1 downto 0);
-           ONE_EUR: out STD_LOGIC;
-           SALIDA: out STD_LOGIC_VECTOR(4 downto 0));
+           ONE_EUR: out STD_LOGIC;--señal de alcanzado 1 EUR
+           SALIDA: out STD_LOGIC_VECTOR(4 downto 0)); --10c equivaldran a 00001, 20c a 00010...
 end component;
 component Err_gestor is
     Port ( switch: in STD_LOGIC_VECTOR (3 downto 0);
@@ -78,22 +66,22 @@ component Err_gestor is
            button: in STD_LOGIC;
            err_flag : out STD_LOGIC_VECTOR (1 downto 0));
     end component;
-component decoder is
-    Port ( clk: in STD_LOGIC;
-           sw : in STD_LOGIC_VECTOR (3 downto 0);
-           dinero : in STD_LOGIC_VECTOR (4 downto 0); --SALIDA DE LA ENTIDA SALDO
-           seg : out STD_LOGIC_VECTOR (6 downto 0);
-           dig : out STD_LOGIC_VECTOR (7 downto 0));
-    end component;
 
-signal reset_sync: std_logic;
-signal m_sync: std_logic;
-signal p_sync: std_logic;
-signal reset_edge: std_logic;
-signal m_edge: std_logic;
-signal p_edge: std_logic;
+signal reset_sync: std_logic:= '0';
+signal m_sync: std_logic:= '0';
+signal p_sync: std_logic:= '0';
+signal reset_edge: std_logic:= '0';
+signal m_edge: std_logic:= '0';
+signal p_edge: std_logic:= '0';
+
 signal val: std_logic_vector(4 downto 0):= (others => '0');
+signal un_euro: std_logic := '0';
+
 signal flag: std_logic_vector (1 downto 0):= "00";
+
+signal saldo_on: std_logic := '0';
+signal drink_out: std_logic := '0';
+signal state: std_logic_vector (3 downto 0) := (others => '0');
 
 begin
 inst_sync: synchrnzr port map(
@@ -114,28 +102,32 @@ inst_edge: edgedctr port map(
            EDGE_PROD => p_edge,
            RST_EDGE => reset_edge
         );
+inst_maq: maq_exp port map (
+           clk => CLK,
+           RESET => reset_edge,
+           button_mon => m_edge,
+           button_prod => p_edge,
+           EUR_flag => un_euro,
+           err_flag => flag,
+           act_saldo => saldo_on,
+           refresco => drink_out,
+           LED => LED
+           );
 inst_saldo: saldo port map(
             CLK => CLK,
             SW => SW,
             RESET => reset_edge,
             BOTON => m_edge,
+            ACT_FLAG => saldo_on,--senal de activacion
+            ONE_EUR => un_euro, --señal de alcanzado 1 EUR
             ERR_FLAG => flag,
             SALIDA => val 
         );
-
 inst_err: err_gestor port map(
             button => p_edge,
             value => val,
             switch => SW,
             err_flag => flag
         );
-inst_decoder: decoder port map(           
-            clk => CLK,
-            sw => SW_S,
-            dinero => val,
-            seg => SEGMENT,
-            dig => DIGIT 
-        );        
-LED <= val;
-
+        
 end Behavioral;

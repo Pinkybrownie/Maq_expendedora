@@ -43,7 +43,7 @@ component maq_exp is
            EUR_flag: in STD_LOGIC;
            err_flag : in STD_LOGIC_VECTOR (1 downto 0);
            act_saldo: out STD_LOGIC;--S2
-           refresco: out STD_LOGIC;--);--S3
+           refresco: inout STD_LOGIC;--);--S3
            LED: out STD_LOGIC_VECTOR (3 downto 0));
 end component;
 component synchrnzr is
@@ -119,7 +119,6 @@ clock <= not clock after period/2;
 --SIGNAL GENERATION
 b_prod <= '1' after period*10, '0' after period*10 + 30ns;
 
---b_mon <= '1' after 6sec, '0' after 6sec+50ns;
 
 
 process

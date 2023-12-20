@@ -17,9 +17,9 @@ entity synchrnzr is
 end synchrnzr;
 
 architecture Behavioral of synchrnzr is
-    signal sreg_1: std_logic_vector(1 downto 0);
-    signal sreg_2: std_logic_vector(1 downto 0);
-    signal aux: std_logic_vector(1 downto 0);
+    signal sreg_1: std_logic_vector(1 downto 0):= (others => '0');
+    signal sreg_2: std_logic_vector(1 downto 0):= (others => '0');
+    signal aux: std_logic_vector(1 downto 0):= (others => '1');
 begin
     process (CLK)
     begin
