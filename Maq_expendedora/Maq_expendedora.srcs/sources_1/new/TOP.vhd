@@ -19,7 +19,7 @@ entity TOP is
            PROD: in STD_LOGIC;
            LED: out STD_LOGIC_VECTOR(3 downto 0);
            SEGMENT: out STD_LOGIC_VECTOR(6 downto 0);
-           DIGIT: out STD_LOGIC_VECTOR(7 downto 0)
+           DIG: out STD_LOGIC_VECTOR(7 downto 0)
            );
 end TOP;
 
@@ -68,14 +68,17 @@ component Err_gestor is
            value: in STD_LOGIC_VECTOR(4 downto 0);
            button: in STD_LOGIC;
            err_flag : out STD_LOGIC_VECTOR (1 downto 0));
-    end component;
+end component;
 component decoder is
-    Port ( clk: in STD_LOGIC;
-           sw : in STD_LOGIC_VECTOR (3 downto 0);
-           dinero : in STD_LOGIC_VECTOR (4 downto 0); --SALIDA DE LA ENTIDA SALDO
-           seg : out STD_LOGIC_VECTOR (6 downto 0);
-           dig : out STD_LOGIC_VECTOR (7 downto 0));
-    end component;
+    port (CLK: in STD_LOGIC;
+          SW_P : in STD_LOGIC_VECTOR (3 downto 0);
+          ACT_SALDO: in STD_LOGIC;
+          ERR_FLAG: in STD_LOGIC_VECTOR(1 downto 0);
+          REF: in STD_LOGIC;
+          DINERO : in STD_LOGIC_VECTOR (4 downto 0); --SALIDA DE LA ENTIDA SALDO
+          SEG : out STD_LOGIC_VECTOR (6 downto 0);--segmentos de CADA DIGITO
+          DIGIT : out STD_LOGIC_VECTOR (7 downto 0));--Cada uno de los digitos del decoder
+end component;
 
 signal reset_sync: std_logic:= '0';
 signal m_sync: std_logic:= '0';
@@ -137,10 +140,13 @@ inst_err: err_gestor port map(
             err_flag => flag
         );
 inst_decoder: decoder port map(           
-            clk => CLK,
-            sw => SW_S,
-            dinero => val,
-            seg => SEGMENT,
-            dig => DIGIT 
+            CLK => CLK,
+            SW_P => SW_S,
+            ACT_SALDO => saldo_on,
+            ERR_FLAG => flag,
+            REF => drink_out,
+            DINERO => val,
+            SEG => SEGMENT,
+            DIGIT => DIG
         );          
 end Behavioral;

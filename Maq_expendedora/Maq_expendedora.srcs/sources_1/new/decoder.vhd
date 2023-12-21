@@ -8,8 +8,8 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_ARITH.ALL;
-use IEEE.STD_LOGIC_UNSIGNED.ALL;
+--use IEEE.STD_LOGIC_ARITH.ALL;
+--use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity decoder is
     Port ( CLK: in STD_LOGIC;
@@ -29,9 +29,10 @@ type digitos is array (0 to 7) of std_logic_vector(6 downto 0);
 signal dig: digitos;
 begin
 --pantalla is (dig1, dig2, dig3, dig4, dig5, dig6, dig7, dig8);
-ShowInDecoder: process(ACT_SALDO, REF, DINERO, SW_P)
+ShowInDecoder: process(ERR_FLAG,ACT_SALDO, REF, DINERO, SW_P)
  begin
-  if ACT_SALDO = '0' and REF= '0' then 
+ if ERR_FLAG="00" then
+   if ACT_SALDO = '0' and REF= '0' then 
     case SW_P is
       when "0001" =>
         dig(0) <= "0110001"; --C
@@ -122,6 +123,16 @@ ShowInDecoder: process(ACT_SALDO, REF, DINERO, SW_P)
     dig(6) <= "0110001"; --C
     dig(7) <= "0000001"; --O
   end if;
+ else
+    dig(0) <= "0110000"; --E
+    dig(1) <= "0001000"; --R
+    dig(2) <= "0001000"; --R
+    dig(3) <= "0000001"; --O
+    dig(4) <= "0001000"; --R
+    dig(5) <= "1111111"; --
+    dig(6) <= "1111111"; --
+    dig(7) <= "1111111"; --
+ end if;
 end process;
 
 OneByOne: process(CLK)

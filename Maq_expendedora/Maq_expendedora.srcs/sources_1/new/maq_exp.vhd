@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------
 -- Company: 
--- Engineer: 
+-- Engineer: Andrea Marron Rosado
 -- 
 -- Create Date: 04.12.2023 19:04:33
 -- Design Name: 
@@ -39,7 +39,7 @@ entity maq_exp is
            EUR_flag: in STD_LOGIC;
            err_flag : in STD_LOGIC_VECTOR (1 downto 0);
            act_saldo: out STD_LOGIC;--S2
-           refresco: inout STD_LOGIC;--);--S3
+           refresco: out STD_LOGIC;--);--S3
            LED: out STD_LOGIC_VECTOR (3 downto 0));
 end maq_exp;
 
@@ -57,7 +57,7 @@ state_register: process(clk)
   end if;
  end process;
  
- next_state_mode: process(button_mon,button_prod,current,err_flag, EUR_FLAG, refresco)
+ next_state_mode: process(button_mon,button_prod,current,err_flag, EUR_FLAG)
  begin
   next_state <= current;
   if RESET= '1' then
@@ -81,12 +81,15 @@ state_register: process(clk)
         next_state <= S0;
      end if;
     when S3 =>
+     if button_prod = '1' then --PULSAR BOTON DE PROD
+        next_state <= S0;
+     end if;
      --if rising_edge(refresco) then
         --next_state <= s3;
      --else next_state <= S0 after 100ns;--SOLO PARA EL TESTBENCH
-     if refresco='1' then --activacion modo refresco decoder
-        next_state <= S0 after 3sec;
-     end if;--vuelta a S0 tras 3 segundos
+--     if refresco='1' then --activacion modo refresco decoder
+--        next_state <= S0 after 3sec;
+--     end if;--vuelta a S0 tras 3 segundos
      --NOTA: EN LAS SIMULACIONES AFTER FUNCIONA SIN PROBLEMAS, SE SINTETIZA E IMPLEMENTA.
      --SIN EMBARGO, EN LA PLACA NO FUNCIONA.
   end case;

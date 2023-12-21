@@ -59,7 +59,7 @@ Inst_decoder: decoder
               REF => drink_out,
               DINERO => val,
               SEG => seg,
-              DIGIT => dig);--Cada uno de los digitos del decoder);
+              DIGIT => dig);
 
 --clock generation       
  clock <= not clock after period/2;
@@ -78,28 +78,16 @@ Inst_decoder: decoder
 --sw <= "0000";
 --end process;
 
---    stimuli : process
---    begin
---        -- EDIT Adapt initialization as needed
---        if(dinero_i = "00000") then
---            if rising_edge(CLK) then              
---                for i in 0 to 4 loop
---                        wait for 100 ns;
---                        switch <= std_logic_vector(to_unsigned(i,4)); 
---                end loop;
---                dinero_i <= "00001";
---                switch <= "0000";       
---            else
---                wait for 10 ns;
---                for j in 1 to 11 loop
---                    wait for 100 ns;
---                    dinero_i <= std_logic_vector(to_unsigned(j,5)); 
---                end loop;
---            end if;
---        end if;
+--DINERO (obligar saldo_on=1 y drink_out=0)
+--process
+--variable valor: unsigned (val'range):= (others => '0');
+--begin
+--val <= std_logic_vector(valor);
+--wait for 85ns;
+--valor := valor + 1;
+--end process;
 
---        -- EDIT Add stimuli here
---        wait for 100ns;
---    end process;
+--SALIDA REFRESCO (obligar saldo_on=0 y drink_out=1)
+drink_out <= not drink_out after 100ns;
 
 end tb;
