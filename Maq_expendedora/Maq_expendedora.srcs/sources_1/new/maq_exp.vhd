@@ -36,15 +36,16 @@ entity maq_exp is
            RESET: in STD_LOGIC;
            button_mon: in STD_LOGIC;
            button_prod: in STD_LOGIC;
+           SW: in STD_LOGIC_VECTOR (3 downto 0);
            EUR_flag: in STD_LOGIC;
            err_flag : in STD_LOGIC_VECTOR (1 downto 0);
            act_saldo: out STD_LOGIC;--S2
            refresco: out STD_LOGIC;--);--S3
-           LED: out STD_LOGIC_VECTOR (3 downto 0));
+           LED: out STD_LOGIC_VECTOR (2 downto 0));
 end maq_exp;
 
 architecture Behavioral of maq_exp is
-type states is (S0, S1, S2, S3);
+type states is (S0, S1, S2);
 signal current: states := S0;
 signal next_state: states; 
 
@@ -57,42 +58,38 @@ state_register: process(clk)
   end if;
  end process;
  
- next_state_mode: process(button_mon,button_prod,current,err_flag, EUR_FLAG)
+ next_state_mode: process(button_mon,button_prod, SW,current,err_flag, EUR_FLAG)
  begin
   next_state <= current;
   if RESET= '1' then
     next_state <= S0;
   end if;
-  case current is
+  if err_flag="00" then
+    case current is
     when S0 =>
-     if button_prod = '1' then --SELECCION DE BEBIDA
+     if button_prod = '1' and not(SW="0000") then --SELECCION DE BEBIDA
         next_state <= S1;
      end if;
+     
     when S1 =>
-     if button_mon = '1' then --INTRODUCCION DE LA PRIMERA MONEDA
+     if button_mon = '1' then --INTRODUCCION DE MONEDAS
+        next_state <= s1;
+     end if;
+     if EUR_FLAG = '1' and button_prod = '1' then --saldo 1EUR (quitado boton de producto)
         next_state <= S2;
-     --else next_state <= S0 after 100ns; --SOLO PARA EL TESTBENCH
-     --vuelta a s1 si no se introducen monedas en los proximos 10seg
      end if;
+
     when S2 =>
-     if EUR_FLAG = '1' then --saldo 1EUR
-        next_state <= S3;
-     elsif err_flag= "11" then --saldo >1EUR
-        next_state <= S0;
-     end if;
-    when S3 =>
      if button_prod = '1' then --PULSAR BOTON DE PROD
         next_state <= S0;
      end if;
-     --if rising_edge(refresco) then
-        --next_state <= s3;
-     --else next_state <= S0 after 100ns;--SOLO PARA EL TESTBENCH
---     if refresco='1' then --activacion modo refresco decoder
---        next_state <= S0 after 3sec;
---     end if;--vuelta a S0 tras 3 segundos
-     --NOTA: EN LAS SIMULACIONES AFTER FUNCIONA SIN PROBLEMAS, SE SINTETIZA E IMPLEMENTA.
-     --SIN EMBARGO, EN LA PLACA NO FUNCIONA.
   end case;
+  elsif err_flag= "11" then --saldo >1EUR
+     next_state <= S0;
+  elsif err_flag="10" then --comprar bebida cuando saldo<1EUR 
+     next_state <= s1;
+  end if;
+  
  end process;
  
 --VISUALIZAR EL ESTADO Y ACTIVACIÓN DE BANDERAS
@@ -109,8 +106,6 @@ output_decod: process (current)
     act_saldo <= '1';--activacion de la entidad saldo
    when s2 =>
     LED(2) <= '1';
-   when s3 =>
-    LED(3) <= '1';
     act_saldo <= '0';--desactivacion de la entidad saldo
     refresco <= '1'; --activacion modo refresco decoder
    when others =>

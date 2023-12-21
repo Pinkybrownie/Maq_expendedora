@@ -17,8 +17,10 @@ entity TOP is
            RST : in STD_LOGIC;
            MONEDA: in STD_LOGIC;
            PROD: in STD_LOGIC;
-           LED: out STD_LOGIC_VECTOR(3 downto 0);
+           LED: out STD_LOGIC_VECTOR(2 downto 0);
            SEGMENT: out STD_LOGIC_VECTOR(6 downto 0);
+           DOT: out STD_LOGIC;
+           EUR_FLAG: out STD_LOGIC;--LED QUE INDICA QUE SE HA ALCANZADO 1 EUR
            DIGIT: out STD_LOGIC_VECTOR(7 downto 0)
            );
 end TOP;
@@ -47,11 +49,12 @@ component maq_exp is
            RESET: in STD_LOGIC;
            button_mon: in STD_LOGIC;
            button_prod: in STD_LOGIC;
+           SW: in STD_LOGIC_VECTOR (3 downto 0);
            EUR_flag: in STD_LOGIC;
            err_flag : in STD_LOGIC_VECTOR (1 downto 0);
-           act_saldo: out STD_LOGIC;--S2
-           refresco: inout STD_LOGIC;--);--S3
-           LED: out STD_LOGIC_VECTOR (3 downto 0));
+           act_saldo: out STD_LOGIC;--S1
+           refresco: inout STD_LOGIC;--);--S2
+           LED: out STD_LOGIC_VECTOR (2 downto 0));
 end component;
 component Saldo is
     Port ( CLK: in STD_LOGIC;
@@ -65,15 +68,22 @@ component Saldo is
 end component;
 component Err_gestor is
     Port ( switch: in STD_LOGIC_VECTOR (3 downto 0);
+           sw_p: in STD_LOGIC_VECTOR (3 downto 0);
            value: in STD_LOGIC_VECTOR(4 downto 0);
            button: in STD_LOGIC;
            err_flag : out STD_LOGIC_VECTOR (1 downto 0));
     end component;
 component decoder is
-    Port ( clk: in STD_LOGIC;
-           dinero : in STD_LOGIC_VECTOR (4 downto 0); --SALIDA DE LA ENTIDA SALDO
-           seg : out STD_LOGIC_VECTOR (6 downto 0);
-           dig : out STD_LOGIC_VECTOR (7 downto 0));
+    Port ( CLK: in STD_LOGIC;
+           SW_P : in STD_LOGIC_VECTOR (3 downto 0);
+           ACT_SALDO: in STD_LOGIC;
+           ERR_FLAG: in STD_LOGIC_VECTOR(1 downto 0);
+           REF: in STD_LOGIC;
+           DINERO : in STD_LOGIC_VECTOR (4 downto 0); --SALIDA DE LA ENTIDA SALDO
+           SEG : out STD_LOGIC_VECTOR (6 downto 0);--segmentos de CADA DIGITO
+           PUNTO: out STD_LOGIC;--punto de CADA DIGITO
+           DIGIT : out STD_LOGIC_VECTOR (7 downto 0)--Cada uno de los digitos del decoder
+         );
     end component;
 
 signal reset_sync: std_logic:= '0';
@@ -113,6 +123,7 @@ inst_maq: maq_exp port map (
            RESET => reset_edge,
            button_mon => m_edge,
            button_prod => p_edge,
+           SW => SW_S,
            EUR_flag => un_euro,
            err_flag => flag,
            act_saldo => saldo_on,
@@ -133,12 +144,19 @@ inst_err: err_gestor port map(
             button => p_edge,
             value => val,
             switch => SW,
+            sw_p => SW_S,
             err_flag => flag
         );
 inst_decoder: decoder port map(           
-            clk => CLK,
-            dinero => val,
-            seg => SEGMENT,
-            dig => DIGIT 
-        );          
+            CLK => CLK,
+            SW_P => SW_S,
+            ACT_SALDO => saldo_on,
+            ERR_FLAG => flag,
+            REF => drink_out,
+            DINERO => val,
+            SEG => SEGMENT,
+            PUNTO => DOT,
+            DIGIT => DIGIT 
+        );    
+ EUR_FLAG <= un_euro;      
 end Behavioral;

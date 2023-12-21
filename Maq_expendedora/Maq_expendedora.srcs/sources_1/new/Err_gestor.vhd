@@ -32,6 +32,7 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity Err_gestor is
     Port ( switch: in STD_LOGIC_VECTOR (3 downto 0);
+           sw_p: in STD_LOGIC_VECTOR (3 downto 0);
            value: in STD_LOGIC_VECTOR(4 downto 0);
            button: in STD_LOGIC;
            err_flag : out STD_LOGIC_VECTOR (1 downto 0));
@@ -45,13 +46,18 @@ begin
     if to_integer(unsigned(value))>10 then
         err_flag <= (others => '1');
     else
-        --Error en introduccion de monedas (dos o mas sw activos)
+        --Error en switches (tanto de monedas como producto)
         case to_integer(unsigned(switch)) is
             when 0|1|2|4|8 => err_flag <= (others => '0');
             when others => err_flag <= "01"; --codigo "01"
         end case;
+        case to_integer(unsigned(sw_p)) is
+            when 0|1|2|4|8 => err_flag <= (others => '0');
+            when others => err_flag <= "01"; --codigo "01"
+        end case;
+        
         --código "10" comprar bebida cuando saldo<1EUR 
-        if button='1' and 0< to_integer(unsigned(value)) then
+        if button='1' and 0< to_integer(unsigned(value)) and not(to_integer(unsigned(value))=10) then
             err_flag <= "10";
         end if;
     end if;

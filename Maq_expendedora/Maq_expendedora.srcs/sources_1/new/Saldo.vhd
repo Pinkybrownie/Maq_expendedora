@@ -18,8 +18,12 @@ end Saldo;
 architecture Behavioral of Saldo is
 signal total: unsigned (SALIDA'range):= (others => '0');
 begin
-  process(CLK,SW,RESET,BOTON,ERR_FLAG, ACT_FLAG)
+  process(CLK,SW,RESET,BOTON,ERR_FLAG, ACT_FLAG, total)
   begin
+  if total=10 then
+    ONE_EUR <= '1';
+  else ONE_EUR <= '0';
+  end if;   
   if ACT_FLAG = '1' then
   --SALDO ES UNA ENTIDAD SINCRONA
      if rising_edge(CLK) then
@@ -40,11 +44,7 @@ begin
            total <=(others => '0');
         end if;
      end if;
-     if total=10 then
-        ONE_EUR <= '1';
-        total <=(others => '0');
-     else ONE_EUR <= '0';
-     end if;
+  else total <=(others => '0');
   end if;
   end process;
 SALIDA <= std_logic_vector (total);
