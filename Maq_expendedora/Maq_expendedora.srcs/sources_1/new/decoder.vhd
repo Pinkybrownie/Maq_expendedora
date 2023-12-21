@@ -5,231 +5,136 @@
 -- Create Date: 10.12.2023 21:09:50
 -- Design Name: 
 -- Module Name: decoder - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
-
 entity decoder is
     Port ( CLK: in STD_LOGIC;
-           SW : in STD_LOGIC_VECTOR (3 downto 0);
+           SW_P : in STD_LOGIC_VECTOR (3 downto 0);
+           ACT_SALDO: in STD_LOGIC;
+           ERR_FLAG: in STD_LOGIC_VECTOR(1 downto 0);
+           REF: in STD_LOGIC;
            DINERO : in STD_LOGIC_VECTOR (4 downto 0); --SALIDA DE LA ENTIDA SALDO
-           SEG : out STD_LOGIC_VECTOR (6 downto 0);
-           DIG : out STD_LOGIC_VECTOR (7 downto 0)
+           SEG : out STD_LOGIC_VECTOR (6 downto 0);--segmentos de CADA DIGITO
+           DIGIT : out STD_LOGIC_VECTOR (7 downto 0)--Cada uno de los digitos del decoder
          );
 end decoder;
 
 architecture Behavioral of decoder is
-
+--signal dig1, dig2, dig3, dig4, dig5, dig6, dig7, dig8 : std_logic_vector(6 downto 0);
+type digitos is array (0 to 7) of std_logic_vector(6 downto 0);
+signal dig: digitos;
 begin
-    process(CLK)
-        variable display1, display2, display3, display4, display5, display6, display7, display8 : std_logic_vector(6 downto 0);
-        variable display : integer := 0;
-    begin
-        if rising_edge(CLK) then 
-            if (DINERO = 0) then
-                case SW is
-                    when "0001" =>
-                        display1 := "0110001"; --C
-                        display2 := "0000001"; --O
-                        display3 := "0110001"; --C
-                        display4 := "0001001"; --A
-                        display5 := "0110001"; --C
-                        display6 := "0000001"; --O
-                        display7 := "1110001"; --L
-                        display8 := "0001001"; --A
-                    when "0010" => 
-                        display1 := "0111000"; --F
-                        display2 := "0001001"; --A
-                        display3 := "0001001"; --N
-                        display4 := "0111001"; --T
-                        display5 := "0001001"; --A
-                        display6 := "1111111"; --
-                        display7 := "1111111"; --
-                        display8 := "1111111"; --
-                    when "0100" => 
-                        display1 := "0001001"; --N
-                        display2 := "0110000"; --E
-                        display3 := "0100100"; --S
-                        display4 := "0111001"; --T
-                        display5 := "0110000"; --E
-                        display6 := "0001001"; --A
-                        display7 := "1111111"; --
-                        display8 := "1111111"; --
-                    when "1000" =>
-                        display1 := "0001001"; --A
-                        display2 := "0100001"; --G
-                        display3 := "1000001"; --U
-                        display4 := "0001001"; --A
-                        display5 := "1111111"; --
-                        display6 := "1111111"; --
-                        display7 := "1111111"; --
-                        display8 := "1111111"; --
-                    when others =>
-                        display1 := "0110000"; --E
-                        display2 := "0001000"; --R
-                        display3 := "0001000"; --R
-                        display4 := "0000001"; --O
-                        display5 := "0001000"; --R
-                        display6 := "1111111"; --
-                        display7 := "1111111"; --
-                        display8 := "1111111"; --
-                end case;
-            elsif (DINERO /= "00000") then
-                if (DINERO = "00001") then --DINERO INTRODUCIDO = 0.1 EUROS
-                    display1 := "1111111"; --
-                    display2 := "1111111"; --
-                    display3 := "1111111"; --
-                    display4 := "1111111"; --
-                    display5 := "1111111"; --
-                    display6 := "0000001"; --0
-                    display7 := "0110001"; --1
-                    display8 := "0000001"; --0                 
-                    -- "01000000" esto es el punto del DP??
-                elsif (DINERO = "00010") then --DINERO INTRODUCIDO = 0.2 EUROS
-                    display1 := "1111111"; --
-                    display2 := "1111111"; --
-                    display3 := "1111111"; --
-                    display4 := "1111111"; --
-                    display5 := "1111111"; --
-                    display6 := "0000001"; --0
-                    display7 := "0010010"; --2
-                    display8 := "0000001"; --0
-                elsif (DINERO = "00011") then --DINERO INTRODUCIDO = 0.3 EUROS
-                    display1 := "1111111"; --
-                    display2 := "1111111"; --
-                    display3 := "1111111"; --
-                    display4 := "1111111"; --
-                    display5 := "1111111"; --
-                    display6 := "0000001"; --0
-                    display7 := "0000110"; --3
-                    display8 := "0000001"; --0
-                elsif (DINERO = "00100") then --DINERO INTRODUCIDO = 0.4 EUROS
-                    display1 := "1111111"; --
-                    display2 := "1111111"; --
-                    display3 := "1111111"; --
-                    display4 := "1111111"; --
-                    display5 := "1111111"; --
-                    display6 := "0000001"; --0
-                    display7 := "1001100"; --4
-                    display8 := "0000001"; --0
-                elsif (DINERO = "00101") then --DINERO INTRODUCIDO  = 0.5 EUROS
-                    display1 := "1111111"; --
-                    display2 := "1111111"; --
-                    display3 := "1111111"; --
-                    display4 := "1111111"; --
-                    display5 := "1111111"; --
-                    display6 := "0000001"; --0
-                    display7 := "0100100"; --5
-                    display8 := "0000001"; --0
-                elsif (DINERO = "00110") then --DINERO INTRODUCIDO = 0.6 EUROS
-                    display1 := "1111111"; --
-                    display2 := "1111111"; --
-                    display3 := "1111111"; --
-                    display4 := "1111111"; --
-                    display5 := "1111111"; --
-                    display6 := "0000001"; --0
-                    display7 := "0100000"; --6
-                    display8 := "0000001"; --0
-                elsif (DINERO = "00111") then --DINERO INTRODUCIDO = 0.7 EUROS
-                    display1 := "1111111"; --
-                    display2 := "1111111"; --
-                    display3 := "1111111"; --
-                    display4 := "1111111"; --
-                    display5 := "1111111"; --
-                    display6 := "0000001"; --0
-                    display7 := "0001111"; --7
-                    display8 := "0000001"; --0
-                elsif (DINERO = "01000") then --DINERO INTRODUCIDO = 0.8 EUROS
-                    display1 := "1111111"; --
-                    display2 := "1111111"; --
-                    display3 := "1111111"; --
-                    display4 := "1111111"; --
-                    display5 := "1111111"; --
-                    display6 := "0000001"; --0
-                    display7 := "0000000"; --8
-                    display8 := "0000001"; --0
-                elsif (DINERO = "01001") then --DINERO INTRODUCIDO = 0.9 EUROS
-                    display1 := "1111111"; --
-                    display2 := "1111111"; --
-                    display3 := "1111111"; --
-                    display4 := "1111111"; --
-                    display5 := "1111111"; --
-                    display6 := "0000001"; --0
-                    display7 := "0000100"; --9
-                    display8 := "0000001"; --0
-                elsif (DINERO = "01010") then --DINERO INTRODUCIDO = 1 EUROS
-                    display1 := "0001000"; --R
-                    display2 := "0110000"; --E
-                    display3 := "0111000"; --F
-                    display4 := "0001000"; --R
-                    display5 := "0110000"; --E
-                    display6 := "0100100"; --S
-                    display7 := "0110001"; --C
-                    display8 := "0000001"; --O
-                elsif DINERO > "01010" then --DINERO INTRODUCIDO > 1 EURO
-                    display1 := "0110000"; --E
-                    display2 := "0001000"; --R
-                    display3 := "0001000"; --R
-                    display4 := "0000001"; --O
-                    display5 := "0001000"; --R
-                    display6 := "1111111"; --
-                    display7 := "1111111"; --
-                    display8 := "1111111"; --
-                end if;
-            end if;
-            --if rising_edge(CLK) then
-                display := (display + 1) mod 8;
-            --end if;
-            case display is 
-                when 0 =>
-                    DIG <= "01111111";
-                    SEG <= display1;
-                when 1 =>
-                    DIG <= "10111111";
-                    SEG <= display2;
-                when 2 =>
-                    DIG <= "11011111";
-                    SEG <= display3;
-                when 3 =>
-                    DIG <= "11101111";
-                    SEG <= display4;
-                when 4 =>
-                    DiG <= "11110111";
-                    SEG <= display5;
-                when 5 =>
-                    DIG <= "11111011";
-                    SEG <= display6;
-                when 6 =>
-                    DIG <= "11111101";
-                    SEG <= display7;
-                when others =>
-                    DIG <= "11111110";        
-                    SEG <= display8;
-            end case;
-        end if;
-    end process;
+--pantalla is (dig1, dig2, dig3, dig4, dig5, dig6, dig7, dig8);
+ShowInDecoder: process(ACT_SALDO, REF, DINERO, SW_P)
+ begin
+  if ACT_SALDO = '0' and REF= '0' then 
+    case SW_P is
+      when "0001" =>
+        dig(0) <= "0110001"; --C
+        dig(1) <= "0000001"; --O
+        dig(2) <= "0110001"; --C
+        dig(3) <= "0001001"; --A
+        dig(4) <= "0110001"; --C
+        dig(5) <= "0000001"; --O
+        dig(6) <= "1110001"; --L
+        dig(7) <= "0001001"; --A
+      when "0010" => 
+        dig(0) <= "0111000"; --F
+        dig(1) <= "0001001"; --A
+        dig(2) <= "0001001"; --N
+        dig(3) <= "0111001"; --T
+        dig(4) <= "0001001"; --A
+        dig(5) <= "1111111"; --
+        dig(6) <= "1111111"; --
+        dig(7) <= "1111111"; --
+      when "0100" => 
+        dig(0) <= "0001001"; --N
+        dig(1) <= "0110000"; --E
+        dig(2) <= "0100100"; --S
+        dig(3) <= "0111001"; --T
+        dig(4) <= "0110000"; --E
+        dig(5) <= "0001001"; --A
+        dig(6) <= "1111111"; --
+        dig(7) <= "1111111"; --
+      when "1000" =>
+        dig(0) <= "0001001"; --A
+        dig(1) <= "0100001"; --G
+        dig(2) <= "1000001"; --U
+        dig(3) <= "0001001"; --A
+        dig(4) <= "1111111"; --
+        dig(5) <= "1111111"; --
+        dig(6) <= "1111111"; --
+        dig(7) <= "1111111"; --
+      when others =>
+        dig(0) <= "0110000"; --E
+        dig(1) <= "0001000"; --R
+        dig(2) <= "0001000"; --R
+        dig(3) <= "0000001"; --O
+        dig(4) <= "0001000"; --R
+        dig(5) <= "1111111"; --
+        dig(6) <= "1111111"; --
+        dig(7) <= "1111111"; --
+    end case;
+  elsif ACT_SALDO='1' and REF='0' then
+    dig(0) <= "1111111"; --
+    dig(1) <= "1111111"; --
+    dig(2) <= "1111111"; --
+    dig(3) <= "1111111"; --
+    dig(4) <= "1111111"; --
+    dig(5) <= "0000001"; --0
+    dig(7) <= "0000001"; --0
+    case DINERO is
+        when "00000" => dig(6) <= "0000001"; --0
+        when "00001" => dig(6) <= "0110001"; --1
+        when "00010" => dig(6) <= "0010010"; --2
+        when "00011" => dig(6) <= "0000110"; --3
+        when "00100" => dig(6) <= "1001100"; --4
+        when "00101" => dig(6) <= "0100100"; --5
+        when "00110" => dig(6) <= "0100000"; --6
+        when "00111" => dig(6) <= "0001111"; --7
+        when "01000" => dig(6) <= "0000000"; --8
+        when "01001" => dig(6) <= "0000100"; --9
+        when "01010" =>
+            dig(5) <= "0110001"; --1
+            dig(6) <= "0000001"; --0
+        when others =>
+            dig(0) <= "0110000"; --E
+            dig(1) <= "0001000"; --R
+            dig(2) <= "0001000"; --R
+            dig(3) <= "0000001"; --O
+            dig(4) <= "0001000"; --R
+            dig(5) <= "1111111"; --
+            dig(6) <= "1111111"; --
+            dig(7) <= "1111111"; --    
+    end case;                           
+-- "01000000" esto es el punto del DP??
+  elsif ACT_SALDO='0' and REF='1' then
+    dig(0) <= "0001000"; --R
+    dig(1) <= "0110000"; --E
+    dig(2) <= "0111000"; --F
+    dig(3) <= "0001000"; --R
+    dig(4) <= "0110000"; --E
+    dig(5) <= "0100100"; --S
+    dig(6) <= "0110001"; --C
+    dig(7) <= "0000001"; --O
+  end if;
+end process;
+
+OneByOne: process(CLK)
+variable i: integer := 0;
+begin
+ DIGIT <= (OTHERS => '1');
+ if i<8 then
+     if rising_edge(CLK) then
+        DIGIT(i) <= '0';
+        seg <= dig(7-i);
+        i := i+1;
+     end if;
+ else i:=0;
+ end if;
+end process;
 end Behavioral;

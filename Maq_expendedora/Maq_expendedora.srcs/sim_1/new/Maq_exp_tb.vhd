@@ -119,8 +119,6 @@ clock <= not clock after period/2;
 --SIGNAL GENERATION
 b_prod <= '1' after period*10, '0' after period*10 + 30ns;
 
-
-
 process
 begin
     b_mon <= '1' after period*20, '0' after period*20 + 30ns;
