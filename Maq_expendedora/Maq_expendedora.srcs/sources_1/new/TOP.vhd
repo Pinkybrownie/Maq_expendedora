@@ -12,11 +12,11 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity TOP is
   Port (   CLK: in STD_LOGIC;
-           SW : in STD_LOGIC_VECTOR (3 downto 0);
-           SW_S : in STD_LOGIC_VECTOR (3 downto 0);
+           SW : in STD_LOGIC_VECTOR (3 downto 0);--SW monedas
+           SW_S : in STD_LOGIC_VECTOR (3 downto 0);-- SW bebidas
            RST : in STD_LOGIC;
-           MONEDA: in STD_LOGIC;
-           PROD: in STD_LOGIC;
+           MONEDA: in STD_LOGIC;--boton moneda
+           PROD: in STD_LOGIC;--boton producto
            LED: out STD_LOGIC_VECTOR(2 downto 0);
            SEGMENT: out STD_LOGIC_VECTOR(6 downto 0);
            DOT: out STD_LOGIC;
@@ -71,6 +71,7 @@ component Err_gestor is
            sw_p: in STD_LOGIC_VECTOR (3 downto 0);
            value: in STD_LOGIC_VECTOR(4 downto 0);
            button: in STD_LOGIC;
+           saldo_act: in STD_LOGIC;
            err_flag : out STD_LOGIC_VECTOR (1 downto 0));
     end component;
 component decoder is
@@ -97,7 +98,6 @@ signal un_euro: std_logic := '0';
 signal flag: std_logic_vector (1 downto 0):= "00";
 signal saldo_on: std_logic := '0';
 signal drink_out: std_logic := '0';
-signal state: std_logic_vector (3 downto 0) := (others => '0');
 
 begin
 inst_sync: synchrnzr port map(
@@ -145,6 +145,7 @@ inst_err: err_gestor port map(
             value => val,
             switch => SW,
             sw_p => SW_S,
+            saldo_act => saldo_on,
             err_flag => flag
         );
 inst_decoder: decoder port map(           
